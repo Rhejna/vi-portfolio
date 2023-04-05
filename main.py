@@ -1,16 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, jsonify
 from flask_bootstrap import Bootstrap
-# from flask_wtf import FlaskForm
-# from wtforms import StringField, SubmitField, SelectField
-# from wtforms.validators import DataRequired, URL, Optional
 from flask_ckeditor import CKEditor, CKEditorField
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy.orm import relationship
 from datetime import date
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_mail import Mail, Message
 from form import LoginForm, CreateProjectForm
-# from functools import wraps
+from functools import wraps
+import os
 
 current_year = date.today().year
 
@@ -21,13 +19,23 @@ db = SQLAlchemy()
 # Creating the database
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///portfolio.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY_FLASK")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME_VE")  # 'your_email_address'
+app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD_APP_VE")  # 'your_email_password'
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get("MAIL_USERNAME_VE")  # 'your_email_address'
+
+mail = Mail(app)
 
 
 @login_manager.user_loader
@@ -57,12 +65,6 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(100))
 
 
-
-
-
-
-# all_projects = []
-
 with app.app_context():
     db.create_all()
 
@@ -75,7 +77,7 @@ def home():
 
 @app.route('/projects')
 def get_all_projects():
-    selected_type = request.args.get('type') # get the selected project type from the URL
+    selected_type = request.args.get('type')  # get the selected project type from the URL
     if selected_type:
         projects = Project.query.filter_by(type=selected_type).all()
         count = len(projects)
@@ -94,6 +96,7 @@ def project_single(post_id):
 
 
 @app.route("/new-project", methods=["GET", "POST"])
+@login_required
 def add_new_project():
     form = CreateProjectForm()
     if form.validate_on_submit():
@@ -114,6 +117,7 @@ def add_new_project():
 
 
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@login_required
 def edit_post(post_id):
     post = Project.query.get(post_id)
     edit_form = CreateProjectForm(
@@ -142,6 +146,7 @@ def edit_post(post_id):
 
 
 @app.route("/delete/<int:post_id>")
+@login_required
 def delete_project(post_id):
     project_to_delete = Project.query.get(post_id)
     db.session.delete(project_to_delete)
@@ -154,9 +159,32 @@ def about():
     return render_template("about.html")
 
 
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    return render_template("contact.html")
+    my_number = os.environ.get("PHONE_NUMBER")
+    my_email = os.environ.get("MAIL_USERNAME_VE")
+    if request.method == 'POST':
+        sender_name = request.form['name']
+        sender_email = request.form['email']
+        subject = request.form['subject']
+        message = request.form['message']
+        msg = Message(subject, sender=sender_email, recipients=[my_email])
+        msg.body = f"Hi!\n\nYou've received a message from {sender_name} ({sender_email}) via your portfolio website:" \
+                   f"\n\nSubject: {subject}" \
+                   f"\n\nMessage:\n{message}\n\nPlease respond to this email to get back in touch with {sender_name}." \
+                   f"\n\nBest regards,\nYour Name"
+        try:
+            mail.send(msg)
+            return render_template('success.html', success=True)
+        except Exception as e:
+            print(str(e))
+            return render_template('contact.html', success=False, error=True)
+    return render_template('contact.html', success=False, my_number=my_number, my_email=my_email)
+
+
+@app.route('/success')
+def success():
+    return render_template('success.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -188,31 +216,18 @@ def logout():
     return redirect(url_for('get_all_projects'))
 
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         email = form.email.data
-#         password = form.password.data
-#
-#         user = User.query.filter_by(email=email).first()
-#         # Email doesn't exist
-#         if not user:
-#             flash("That email does not exist, please try again.")
-#             return redirect(url_for('login'))
-#         # Password incorrect
-#         elif not check_password_hash(user.password, password):
-#             flash('Password incorrect, please try again.')
-#             return redirect(url_for('login'))
-#         else:
-#             login_user(user)
-#             return redirect(url_for('get_all_posts'))
-#
-#     return render_template("login.html", form=form, current_user=current_user)
+# # Create admin-only decorator
+# def admin_only(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         # If id is not authenticated then return abort with 403 error
+#         if current_user.get_id() != 1 or not current_user.is_authenticated:
+#             return abort(403, description="Not authorised")
+#         return f(*args, **kwargs)
+#     return decorated_function
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
 # print(generate_password_hash('', method='pbkdf2:sha256', salt_length=8))

@@ -51,8 +51,10 @@
                   <li><strong>Category</strong> <span>{{ project.type }}</span></li>
                   <li><strong>Client</strong> <span>{{ project.client }}</span></li>
                   <li><strong>Project date</strong> <span>{{ project.date }}</span></li>
-                  <li><strong>Project URL</strong> <a href="#">{{ project.project_url }}</a></li>
+                  <li><strong>Project URL</strong> <a href="{{ project.project_url }}">{{ project.project_url }}</a></li>
+                  {% if current_user.is_authenticated: %}
                   <li><strong>Edit</strong> <a class="cta-btn" href="{{url_for('edit_post', post_id=project.id)}}">Edit Project</a></li>
+                  {% endif %}
                   <!--                <li><a href="#" class="btn-visit align-self-start">Visit Website</a></li>-->
               </ul>
             </div>
