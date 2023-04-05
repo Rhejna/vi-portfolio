@@ -1,0 +1,43 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+{% include "header.html" %}
+
+  <main id="main" data-aos="fade" data-aos-delay="1500">
+
+    <!-- ======= End Page Header ======= -->
+    <div class="page-header d-flex align-items-center">
+      <div class="container position-relative">
+        <div class="row d-flex justify-content-center">
+          <div class="col-lg-6 text-center">
+              {% if is_edit: %}
+              <h2>Edit Project</h2>
+              {% else: %}
+              <h2>New Project</h2>
+              {% endif %}
+              <p>Show them what you have done !</p>
+          </div>
+        </div>
+      </div>
+    </div><!-- End Page Header -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container">
+
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-lg-9">
+            {{ ckeditor.load() }}
+            {{ ckeditor.config(name='body') }}
+            {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+          </div><!-- End Contact Form -->
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+{% include "footer.html" %}
+{% endblock %}

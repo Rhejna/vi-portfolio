@@ -1,0 +1,60 @@
+{% include "header.html" %}
+
+<main id="main" data-aos="fade" data-aos-delay="1500">
+    
+    <!-- ======= End Page Header ======= -->
+    <div class="page-header d-flex align-items-center">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2>ADD PROJECT</h2>
+                    <p>Here is the place where to create/add a new project to the Portfolio</p>
+                
+                </div>
+            </div>
+        </div>
+    </div><!-- End Page Header -->
+    
+    <!-- ======= Contact Section ======= -->
+    <section id="add_project" class="add_project">
+        <div class="container">
+            
+            <div class="row justify-content-center mt-4">
+                
+                <div class="col-lg-9">
+                    <form class="add-project-form" action="{{ url_for('add_project') }}" method="POST">
+                        <div class="form-group mt-3">
+                            <input type="text" class="form-control" name="title" placeholder="Project Title" required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <input type="text" class="form-control" name="subtitle" placeholder="Subtitle">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <select type="text" name="type" class="form-control" required>
+                                    <option selected>Choose type of project</option>
+                                    <option value="data science">Data Science</option>
+                                    <option value="python">Python</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 form-group mt-3 mt-md-0">
+                                <input type="text" class="form-control" name="img_url" placeholder="Image url" required>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <textarea class="form-control" name="description" rows="5" placeholder="Description" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit">Add Project</button>
+                        </div>
+                    </form>
+                </div><!-- End Contact Form -->
+            
+            </div>
+        
+        </div>
+    </section><!-- End Contact Section -->
+
+</main><!-- End #main -->
+
+{% include "footer.html" %}
