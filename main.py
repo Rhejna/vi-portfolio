@@ -101,8 +101,17 @@ def get_all_projects():
 # RENDER POST USING DB
 @app.route("/project-single/<int:post_id>")
 def project_single(post_id):
-    requested_post = Project.query.get(post_id)
-    return render_template("gallery-single.html", project=requested_post)
+    # requested_post = Project.query.get(post_id)
+    requested_post = Project.query.filter_by(id=post_id).first()
+
+    # Get the previous project
+    prev_project = Project.query.filter(Project.id < post_id).order_by(Project.id.desc()).first()
+
+    # Get the next project
+    next_project = Project.query.filter(Project.id > post_id).first()
+
+    # return render_template("gallery-single.html", project=requested_post)
+    return render_template("gallery-single.html", project=requested_post, prev_project=prev_project, next_project=next_project)
 
 
 @app.route("/new-project", methods=["GET", "POST"])

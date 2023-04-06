@@ -8,7 +8,8 @@
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-8 text-center">
                     <h2>{{ project_string }}</h2>
-                    <p>More still coming, trying different things, we keep growing !</p>
+                    <p>Here you can find a selection of the projects I have worked on. I am always experimenting with different approaches to better understand and solve complex problems.
+                        Stay tuned for more projects to come!</p>
                     
                     {% if current_user.is_authenticated: %}
                     <a class="cta-btn" href="{{url_for('add_new_project')}}">Create New Project</a>
@@ -38,7 +39,7 @@
                             {% if current_user.is_authenticated: %}
                             <a href="{{url_for('delete_project', post_id=project.id) }}" class="preview-link">✘</a>
                             {% endif %}
-                            <a href="{{ url_for('project_single', post_id=project.id) }}" class="details-link"><i class="bi bi-link-45deg">{{project.title}}</i></a>
+                            <a href="{{ url_for('project_single', post_id=project.id) }}" class="details-link"><i>{{project.title}}</i></a>
                         </div>
                     </div>
                 </div><!-- End Gallery Item -->

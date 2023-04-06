@@ -138,6 +138,33 @@ h6 {
   background: #2cbc85;
 }
 
+
+/*--------------------------------------------------------------
+# Gallery Arrow button
+--------------------------------------------------------------*/
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99;
+}
+
+.gallery-arrow-left {
+  left: 55px;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+.gallery-arrow-right {
+  right: 35px;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+.gallery-arrow i {
+  font-size: 30px;
+  line-height: 0;
+}
+
+
 /*--------------------------------------------------------------
 # Scroll top button
 --------------------------------------------------------------*/
@@ -752,6 +779,9 @@ h6 {
 }
 
 .gallery .gallery-item img {
+  width: 300px; /* set the desired width */
+  height: 200px; /* set the desired height */
+  object-fit: cover; /* maintain aspect ratio while filling the container */
   transition: 0.3s;
 }
 
@@ -809,7 +839,11 @@ h6 {
 # Gallery Single Section
 --------------------------------------------------------------*/
 .gallery-single .portfolio-details-slider img {
-  width: 100%;
+  width: 70%;
+  display: block;
+  margin: auto;
+  position: relative;
+  top: 0; bottom: 0; left: 0; right: 0;
 }
 
 .gallery-single .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet {
@@ -1158,6 +1192,17 @@ h6 {
 
 .add_project .add-project-form button[type=submit]:hover {
   background: rgba(39, 167, 118, 0.8);
+}
+
+/*--------------------------------------------------------------
+# Add CV
+--------------------------------------------------------------*/
+.add_cv{
+  background: var(--color-primary);
+  border: 0;
+  padding: 10px 35px;
+  color: #fff;
+  border-radius: 10px;
 }
 
 
