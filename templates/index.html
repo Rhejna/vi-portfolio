@@ -5,9 +5,9 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-6 text-center">
-          <h2>I'm <span>Velda MB</span> a Junior Data Scientist and Python enthusiast</h2>
-          <p>Blanditiis praesentium aliquam illum tempore incidunt debitis dolorem magni est deserunt sed qui libero. Qui voluptas amet.</p>
-          <a href="contact.html" class="btn-get-started">Available for hire</a>
+          <h2>I'm <span>Velda MB</span> an Aspiring Data Scientist and Python enthusiast</h2>
+          <p>Welcome to my portfolio website!</p>
+          <a href="/contact" class="btn-get-started">Available for hire</a>
         </div>
       </div>
     </div>
@@ -27,6 +27,7 @@
 <!--                      <p>{{project.title}}</p>-->
                       <img src="{{ project.img_url }}" class="img-fluid" alt="">
                       <div class="gallery-links d-flex align-items-center justify-content-center">
+                          <a href="{{ project.img_url }}" title="{{project.body}}" class="glightbox preview-link"><i class="bi bi-arrows-angle-expand"></i></a>
                           <a href="{{ url_for('project_single', post_id=project.id) }}" class="details-link">{{project.title}}</a>
                       </div>
                   </div>

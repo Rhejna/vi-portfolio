@@ -9,8 +9,15 @@ from flask_mail import Mail, Message
 from form import LoginForm, CreateProjectForm
 from functools import wraps
 import os
+from datetime import datetime
 
-current_year = date.today().year
+# get today's date
+today = datetime.today()
+
+# Trying to get my age
+birthdate = datetime(year=1999, month=8, day=21)
+age = today.year - birthdate.year - ((today.month) < (birthdate.month))
+age_str = str(age)
 
 # create the app
 app = Flask(__name__)
@@ -34,6 +41,9 @@ app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME_VE")  # 'your_email_address'
 app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD_APP_VE")  # 'your_email_password'
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get("MAIL_USERNAME_VE")  # 'your_email_address'
+
+my_number = os.environ.get("PHONE_NUMBER")
+my_email = os.environ.get("MAIL_USERNAME_VE")
 
 mail = Mail(app)
 
@@ -156,13 +166,11 @@ def delete_project(post_id):
 
 @app.route('/about')
 def about():
-    return render_template("about.html")
+    return render_template("about.html", my_number=my_number, my_email=my_email, age_str=age_str)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    my_number = os.environ.get("PHONE_NUMBER")
-    my_email = os.environ.get("MAIL_USERNAME_VE")
     if request.method == 'POST':
         sender_name = request.form['name']
         sender_email = request.form['email']
@@ -170,7 +178,7 @@ def contact():
         message = request.form['message']
         msg = Message(subject, sender=sender_email, recipients=[my_email])
         msg.body = f"Hi!\n\nYou've received a message from {sender_name} ({sender_email}) via your portfolio website:" \
-                   f"\n\nSubject: {subject}" \
+                   f"\n\nSubject: ViFolio - {subject}" \
                    f"\n\nMessage:\n{message}\n\nPlease respond to this email to get back in touch with {sender_name}." \
                    f"\n\nBest regards,\nYour Name"
         try:
